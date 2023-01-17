@@ -28,6 +28,10 @@ async def listen_for_messages():
                         if members.count(domain) > 5:
                             await client.room_ban(room.room_id, domain)
                             print(f"Banned domain: {domain}")
+                        sessions = await client.get_presence(user_id)
+                        if sessions["presence"] == "offline":
+                            await client.room_ban(room.room_id, user_id)
+                            print(f"Banned user: {user_id}")
         except Exception as e:
             print(e)
 
