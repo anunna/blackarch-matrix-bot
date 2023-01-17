@@ -25,13 +25,13 @@ async def listen_for_messages():
                     if domain != "matrix.org":
                         room = client.get_rooms()[0]
                         members = [m.split(":")[1] for m in room.get_joined_members() if m != user_id]
-                        if members.count(domain) > 5:
+                        if members.count(domain) > 3:
                             await client.room_ban(room.room_id, domain)
                             print(f"Banned domain: {domain}")
-                        sessions = await client.get_presence(user_id)
-                        if sessions["presence"] == "offline":
-                            await client.room_ban(room.room_id, user_id)
-                            print(f"Banned user: {user_id}")
+                        devices = await client.get_devices(user_id)
+                        if not devices["devices"]:
+                            await client.room_kick(room.room_id, user_id)
+                            print(f"Kicked user: {user_id}")
         except Exception as e:
             print(e)
 
